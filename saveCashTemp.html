@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script type="text/javascript" src="vue/vue.min.js"></script>
+</head>
+<body>
+<div id="saveCashTemp">
+  <div class="layui-form-item">
+    <label class="layui-form-label">类型：</label>
+    <select v-model="saveType">
+      <option v-for="item in saveTypeOptions" :value="item.value">{{item.text}}</option>
+    </select>
+
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">金额：</label>
+    <input type="text" v-model="price"/>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">年利率：</label>
+    <input type="number" v-model="rate"/>
+    <span>%</span>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">存款年限：</label>
+    <input type="text" v-model="year"/>
+  </div>
+  <div class="layui-form-item">
+    计算结果：{{saveType}}，
+    金额：{{price}}，
+    年利率：{{rate}}，
+    存{{year}}年，
+    本息合计：{{saveCash}}
+  </div>
+</div>
+<script type="text/javascript">
+  new Vue({
+    el: '#saveCashTemp',
+    data: {
+      saveType: '按周存',
+      saveTypeOptions: [
+        {text: '按周存', value: '按周存'},
+        {text: '按月存', value: '按月存'},
+        {text: '按年存', value: '按年存'}
+      ],
+      price: 100,
+      rate: 8.5,
+      year: 5
+    },
+    computed: {
+      saveCash: function () {
+        var total = 0;
+        if (this.saveType == '按周存') {
+          for (var i = this.year; i > 0; i--) {
+            //total += this.price  * Math.pow(1 + this.rate / 100, i);
+            total = (parseFloat(this.price) + total) * (1 + this.rate / 100);
+          }
+          return total * 52;
+        } else if (this.saveType == '按月存') {
+          for (var i = this.year; i > 0; i--) {
+            total += parseFloat(this.price) * Math.pow(1 + this.rate / 100, i);
+          }
+          return total * 12;
+        } else if (this.saveType == '按年存') {
+          for (var i = this.year; i > 0; i--) {
+            total += parseFloat(this.price) * Math.pow(1 + this.rate / 100, i);
+          }
+          return total;
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>
